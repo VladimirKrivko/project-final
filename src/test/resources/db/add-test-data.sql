@@ -1,17 +1,10 @@
-DELETE FROM profile;
-DELETE FROM user_role;
-DELETE FROM user_belong;
-DELETE FROM users;
-DELETE FROM task;
-DELETE FROM sprint;
-DELETE FROM project;
-ALTER SEQUENCE users_id_seq RESTART WITH 1;
-
+-- ============ Users =================
 insert into users (EMAIL, PASSWORD, FIRST_NAME, LAST_NAME, DISPLAY_NAME)
 values ('user@gmail.com', '{noop}password', 'userFirstName', 'userLastName', 'userDisplayName'),
        ('admin@gmail.com', '{noop}admin', 'adminFirstName', 'adminLastName', 'adminDisplayName'),
        ('guest@gmail.com', '{noop}guest', 'guestFirstName', 'guestLastName', 'guestDisplayName');
 
+-- ============ User Roles =================
 -- 0 DEV
 -- 1 ADMIN
 insert into USER_ROLE (ROLE, USER_ID)
@@ -19,9 +12,7 @@ values (0, 1),
        (1, 2),
        (0, 2);
 
-DELETE FROM reference;
-ALTER SEQUENCE reference_id_seq RESTART WITH 1;
---============ References =================
+-- ============ References =================
 insert into reference (CODE, TITLE, REF_TYPE)
 -- TASK
 values ('task', 'Task', 2),
@@ -73,8 +64,7 @@ insert into profile (ID, LAST_FAILED_LOGIN, LAST_LOGIN, MAIL_NOTIFICATIONS)
 values (1, null, null, 49),
        (2, null, null, 14);
 
-DELETE FROM contact;
-insert into contact (ID, CODE, VALUE)
+insert into contact (ID, CODE, "value")
 values (1, 'skype', 'userSkype'),
        (1, 'mobile', '+01234567890'),
        (1, 'website', 'user.com'),
