@@ -251,7 +251,7 @@ values (1, 'skype', 'userSkype'),
        (2, 'tg', 'adminTg'),
        (2, 'vk', 'adminVk');
 
---changeset kriffer:add_dashboard
+-- changeset kriffer:add_dashboard
 
 INSERT INTO project (id, code, title, description, type_code, startpoint, endpoint, parent_id)
 VALUES (2, 'task tracker', 'PROJECT-1', 'test project', 'task tracker', null, null, null);
@@ -281,7 +281,7 @@ VALUES (5, 4, 2, 2, 'admin', null, null);
 INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint)
 VALUES (6, 5, 2, 2, 'admin', null, null);
 
---changeset VladimirKrivko:remove_vk
+-- changeset VladimirKrivko:remove_vk
 
 DELETE
 FROM REFERENCE
@@ -290,7 +290,7 @@ DELETE
 FROM CONTACT
 WHERE CODE = 'vk';
 
---changeset VladimirKrivko:add task activity for calculating working and testing time
+-- changeset VladimirKrivko:add task activity for calculating working and testing time
 INSERT INTO ACTIVITY (ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE)
 VALUES (1, 1, 4, '2023-05-10 09:05:00.000000', 'in progress'),
        (2, 1, 4, '2023-05-10 11:30:00.000000', 'ready'),
@@ -304,3 +304,14 @@ ALTER TABLE ACTIVITY
         FOREIGN KEY (AUTHOR_ID)
             REFERENCES USERS (ID)
             ON DELETE CASCADE;
+-- changeset VladimirKrivko:add_task_subscription
+create table TASK_SUBSCRIPTION
+(
+    TASK_ID     bigint      not null,
+    USER_ID     bigint      not null,
+    constraint FK_TASK_SUBSCRIPTION_TO_TASK foreign key (TASK_ID) references TASK (ID) on delete cascade on update cascade,
+    constraint FK_TASK_SUBSCRIPTION_TO_USER foreign key (USER_ID) references USERS (ID) on delete cascade on update cascade
+);
+create unique index UK_TASK_SUBSCRIPTION on TASK_SUBSCRIPTION (TASK_ID, USER_ID);
+create index IX_TASK_SUBSCRIPTION_USER_ID on TASK_SUBSCRIPTION (USER_ID);
+create index IX_TASK_SUBSCRIPTION_TASK_ID on TASK_SUBSCRIPTION (TASK_ID);
