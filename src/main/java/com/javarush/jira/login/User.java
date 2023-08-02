@@ -3,6 +3,7 @@ package com.javarush.jira.login;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.javarush.jira.bugtracking.internal.model.Task;
 import com.javarush.jira.common.HasIdAndEmail;
 import com.javarush.jira.common.model.TimestampEntry;
 import com.javarush.jira.common.util.validation.NoHtml;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -79,6 +81,9 @@ public class User extends TimestampEntry implements HasIdAndEmail, Serializable 
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "subscribedUsers")
+    private Set<Task> subscribedTasks = new HashSet<>();
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);

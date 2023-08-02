@@ -88,9 +88,9 @@ create table PROFILE
 
 create table CONTACT
 (
-    ID    bigint       not null,
-    CODE  varchar(32)  not null,
-    VALUE varchar(256) not null,
+    ID      bigint       not null,
+    CODE    varchar(32)  not null,
+    "value" varchar(256) not null,
     primary key (ID, CODE),
     constraint FK_CONTACT_PROFILE foreign key (ID) references PROFILE (ID) on delete cascade
 );
@@ -158,7 +158,7 @@ create index IX_USER_BELONG_USER_ID on USER_BELONG (USER_ID);
 create table ATTACHMENT
 (
     ID          bigserial primary key,
-    NAME        varchar(128) not null,
+    NAME        varchar(128)  not null,
     FILE_LINK   varchar(2048) not null,
     OBJECT_ID   bigint        not null,
     OBJECT_TYPE smallint      not null,
@@ -243,7 +243,7 @@ insert into PROFILE (ID, LAST_FAILED_LOGIN, LAST_LOGIN, MAIL_NOTIFICATIONS)
 values (1, null, null, 49),
        (2, null, null, 14);
 
-insert into CONTACT (ID, CODE, VALUE)
+insert into CONTACT (ID, CODE, "value")
 values (1, 'skype', 'userSkype'),
        (1, 'mobile', '+01234567890'),
        (1, 'website', 'user.com'),
@@ -251,18 +251,67 @@ values (1, 'skype', 'userSkype'),
        (2, 'tg', 'adminTg'),
        (2, 'vk', 'adminVk');
 
---changeset kriffer:add_dashboard
+-- changeset kriffer:add_dashboard
 
-INSERT INTO project (id, code, title, description, type_code, startpoint, endpoint, parent_id) VALUES (2, 'task tracker', 'PROJECT-1', 'test project', 'task tracker', null, null, null);
+INSERT INTO project (id, code, title, description, type_code, startpoint, endpoint, parent_id)
+VALUES (2, 'task tracker', 'PROJECT-1', 'test project', 'task tracker', null, null, null);
 
-INSERT INTO sprint (id, status_code, startpoint, endpoint, title, project_id) VALUES (1, 'planning', '2023-04-09 23:05:05.000000', '2023-04-12 23:05:12.000000', 'Sprint-1', 2);
+INSERT INTO sprint (id, status_code, startpoint, endpoint, title, project_id)
+VALUES (1, 'planning', '2023-04-09 23:05:05.000000', '2023-04-12 23:05:12.000000', 'Sprint-1', 2);
 
-INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id, sprint_id, parent_id, startpoint, endpoint) VALUES (2, 'Task-1', 'short test task', 'task', 'in progress', 'high', null, null, 2, 1, null, null, null);
-INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id, sprint_id, parent_id, startpoint, endpoint) VALUES (3, 'Task-2', 'test 2 task', 'bug', 'ready', 'normal', null, null, 2, 1, null, null, null);
-INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id, sprint_id, parent_id, startpoint, endpoint) VALUES (5, 'Task-4', 'test 4', 'bug', 'in progress', 'normal', null, null, 2, 1, null, null, null);
-INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id, sprint_id, parent_id, startpoint, endpoint) VALUES (4, 'Task-3', 'test 3 descr', 'task', 'done', 'low', null, null, 2, 1, null, null, null);
+INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id,
+                  sprint_id, parent_id, startpoint, endpoint)
+VALUES (2, 'Task-1', 'short test task', 'task', 'in progress', 'high', null, null, 2, 1, null, null, null);
+INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id,
+                  sprint_id, parent_id, startpoint, endpoint)
+VALUES (3, 'Task-2', 'test 2 task', 'bug', 'ready', 'normal', null, null, 2, 1, null, null, null);
+INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id,
+                  sprint_id, parent_id, startpoint, endpoint)
+VALUES (5, 'Task-4', 'test 4', 'bug', 'in progress', 'normal', null, null, 2, 1, null, null, null);
+INSERT INTO task (id, title, description, type_code, status_code, priority_code, estimate, updated, project_id,
+                  sprint_id, parent_id, startpoint, endpoint)
+VALUES (4, 'Task-3', 'test 3 descr', 'task', 'done', 'low', null, null, 2, 1, null, null, null);
 
-INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (3, 2, 2, 2, 'admin', null, null);
-INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (4, 3, 2, 2, 'admin', null, null);
-INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (5, 4, 2, 2, 'admin', null, null);
-INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint) VALUES (6, 5, 2, 2, 'admin', null, null);
+INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint)
+VALUES (3, 2, 2, 2, 'admin', null, null);
+INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint)
+VALUES (4, 3, 2, 2, 'admin', null, null);
+INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint)
+VALUES (5, 4, 2, 2, 'admin', null, null);
+INSERT INTO user_belong (id, object_id, object_type, user_id, user_type_code, startpoint, endpoint)
+VALUES (6, 5, 2, 2, 'admin', null, null);
+
+-- changeset VladimirKrivko:remove_vk
+
+DELETE
+FROM REFERENCE
+WHERE CODE = 'vk';
+DELETE
+FROM CONTACT
+WHERE CODE = 'vk';
+
+-- changeset VladimirKrivko:add task activity for calculating working and testing time
+INSERT INTO ACTIVITY (ID, AUTHOR_ID, TASK_ID, UPDATED, STATUS_CODE)
+VALUES (1, 1, 4, '2023-05-10 09:05:00.000000', 'in progress'),
+       (2, 1, 4, '2023-05-10 11:30:00.000000', 'ready'),
+       (3, 1, 4, '2023-05-10 11:55:05.000000', 'done');
+
+ALTER TABLE ACTIVITY
+    DROP CONSTRAINT FK_ACTIVITY_USERS;
+
+ALTER TABLE ACTIVITY
+    ADD CONSTRAINT FK_ACTIVITY_USERS
+        FOREIGN KEY (AUTHOR_ID)
+            REFERENCES USERS (ID)
+            ON DELETE CASCADE;
+-- changeset VladimirKrivko:add_task_subscription
+create table TASK_SUBSCRIPTION
+(
+    TASK_ID     bigint      not null,
+    USER_ID     bigint      not null,
+    constraint FK_TASK_SUBSCRIPTION_TO_TASK foreign key (TASK_ID) references TASK (ID) on delete cascade on update cascade,
+    constraint FK_TASK_SUBSCRIPTION_TO_USER foreign key (USER_ID) references USERS (ID) on delete cascade on update cascade
+);
+create unique index UK_TASK_SUBSCRIPTION on TASK_SUBSCRIPTION (TASK_ID, USER_ID);
+create index IX_TASK_SUBSCRIPTION_USER_ID on TASK_SUBSCRIPTION (USER_ID);
+create index IX_TASK_SUBSCRIPTION_TASK_ID on TASK_SUBSCRIPTION (TASK_ID);
