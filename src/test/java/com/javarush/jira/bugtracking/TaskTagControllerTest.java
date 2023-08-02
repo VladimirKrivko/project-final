@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.javarush.jira.bugtracking.TaskTagController.REST_URL;
+import static com.javarush.jira.bugtracking.TaskTestData.TASK_ID;
 import static com.javarush.jira.common.util.JsonUtil.writeValue;
 import static com.javarush.jira.login.internal.web.UserTestData.USER_MAIL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class TaskTagControllerTest extends AbstractControllerTest {
-    private static final long TASK_ID = 2;
 
     @Autowired
     TaskRepository repository;
